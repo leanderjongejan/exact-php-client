@@ -119,5 +119,19 @@ class SalesEntry extends Model
         $this->attributes['SalesEntryLines'][] = $array;
     }
 
+    /**
+     * Updates the PurchaseEntryLines collection on a PurchaseEntry if it's been detected as a deferred collection.
+     * Fetches results and stores them on this object.
+     *
+     * @return mixed
+     */
+    public function getSalesEntryLines()
+    {
+        if (array_key_exists('__deferred', $this->attributes['SalesEntryLines'])) {
+            $this->attributes['SalesEntryLines'] = (new SalesEntryLine($this->connection()))->filter("EntryID eq guid'{$this->EntryID}'", '', 'ID, LineNumber');
+        }
+        return $this->attributes['SalesEntryLines'];
+    }
+
     protected $url = 'salesentry/SalesEntries';
 }
